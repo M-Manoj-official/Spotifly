@@ -3,3 +3,24 @@
 * {
   font-family: 'Inter', sans-serif;
 }
+
+    @layer utilities {
+      .scrollbar-hide::-webkit-scrollbar {
+        width: 5px; /* Thin vertical scrollbar */
+        height: 5px; /* Thin horizontal scrollbar */
+      }
+
+      .scrollbar-hide::-webkit-scrollbar-track {
+        background: transparent; /* No track background */
+      }
+
+      .scrollbar-hide::-webkit-scrollbar-thumb {
+        background: #535353; /* Dark gray thumb */
+        border-radius: 3px;
+      }
+
+      .scrollbar-hide::-webkit-scrollbar-thumb:hover {
+        background: #b3b3b3; /* Lighter on hover */
+      }
+    }
+    

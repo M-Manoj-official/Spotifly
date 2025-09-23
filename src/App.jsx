@@ -3,6 +3,7 @@ import './App.css'
 import { Navbar } from './assets/Components/Navbar/Navbar'
 import { Libraery } from './assets/Components/Libraery/Libraery'
 import { Song } from './assets/Components/Song/Song'
+import { MiniPlayer } from './assets/Components/MiniPlayer/MiniPlayer'
 
 function App() {
 
@@ -12,6 +13,7 @@ function App() {
       <Navbar />
       <Libraery />
       <Song />
+      <MiniPlayer/>
     </div>
     </>
   )
