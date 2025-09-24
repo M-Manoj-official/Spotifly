@@ -1,5 +1,5 @@
-import React from 'react'
-import { useState } from 'react'
+import React from 'react';
+import { useContext } from 'react';
 import { FaPause } from "react-icons/fa";
 import { FaPlay } from "react-icons/fa";
 import { FaForwardStep } from "react-icons/fa6";
@@ -16,75 +16,100 @@ import { LuMonitorSpeaker } from "react-icons/lu";
 import { HiMiniSpeakerWave } from "react-icons/hi2";
 import { PiScreencast } from "react-icons/pi";
 import { AiOutlineFullscreen } from "react-icons/ai";
+import { PlayerContext } from '../PlayerContext/PlayerContext'; // Adjust path if needed
 
 export const MiniPlayer = () => {
-    const [isActive, setIsActive] = useState(false);
-    const [isShuffled, setIsShuffled] = useState(false);
-    const [isMute, setIsMute] = useState(false);
+    const {
+        seekBar,
+        seekBG,
+        playStatus,
+        shuffle,
+        shuffled,
+        notShuffled,
+        play,
+        pause,
+        track,
+        time,
+        handleSeek
+    } = useContext(PlayerContext);
 
-    const handleShuffle = () => {
-        setIsShuffled(!isShuffled);
+    const [isMuted, setIsMuted] = React.useState(false);
+    const toggleMute = () => setIsMuted(!isMuted);
+
+    const progressPercent = time.totalTime.minutes > 0 
+        ? ((time.currentTime.minutes * 60 + time.currentTime.seconds) / (time.totalTime.minutes * 60 + time.totalTime.seconds)) * 100 
+        : 0;
+
+    const volumePercent = 75;
+
+    if (!track) {
+        return <div className='w-full h-20 bg-[#181818] absolute bottom-0 left-0 flex items-center justify-center text-white'>Loading track...</div>;
     }
 
-    const handlePlayPause = () => {
-        setIsActive(!isActive);
-    }
-
-    const handleMute = () => {
-        setIsMute(!isMute);
-    }
-
-  return (
-    <div className='w-full h-20 bg-[#181818] absolute bottom-0 left-0 flex items-center justify-between px-4'>
-        <div className='flex items-center gap-4'>
-            <img className='rounded-md w-15 h-15' src="https://i.scdn.co/image/ab67616d0000b273e6f407c7f3a0ec98845e4431" alt="Album Cover" />
-            <div>
-                <p className='text-white'><b>Peaches</b></p>
-                <p className='text-sm text-[#b3b3b3]'>The Kid LAROI, Justin Bieber</p>
-            </div>
-        </div>
-
-        <div className="text-white flex flex-col items-center gap-3">
+    return (
+        <div className='w-full h-20 bg-[#181818] absolute bottom-0 left-0 flex items-center justify-between px-4'>
             <div className='flex items-center gap-4'>
-                {isShuffled ? (
-                    <button onClick={handleShuffle}><FaShuffle /></button>
-                ) : (
-                    <button onClick={handleShuffle}><RiOrderPlayFill /></button>
-                )}
-                <button><FaBackwardStep /></button>
-                {isActive ? (
-                    <button onClick={handlePlayPause}><FaPause /></button>
-                ) : (
-                    <button onClick={handlePlayPause}><FaPlay /></button>
-                )}
-                <button><FaForwardStep /></button>
-                <button><FaRepeat /></button>
-                {isMute ? (
-                    <button onClick={handleMute}><FaVolumeXmark /></button>
-                ) : (
-                    <button onClick={handleMute}><FaVolumeHigh /></button>
-                )}
-            </div>
-            <div className='w-96 h-1 bg-[#404040] rounded-full mt-2'>
-                <div className='w-1/2 h-1 bg-[#ffffff] rounded-full'></div>
-            </div>
-        </div>
-
-        <div className='flex items-center justify-center gap-4'>
-            <div className='flex items-center gap-2 text-white'>
-                <button><BsFilePlay/></button>
-                <button><TbMicrophone2/></button>
-                <button><MdOutlineQueueMusic/></button>
-                <button><LuMonitorSpeaker/></button>
-                <button><HiMiniSpeakerWave/></button>
-                <div className='w-15 h-1 bg-[#404040] rounded-full mt-2 flex items-center'>
-                    <div className='w-3/4 h-1 bg-[#ffffff] rounded-full'></div>
+                <img 
+                    className='rounded-md w-15 h-15' 
+                    src={track.image} 
+                    alt="Album Cover" 
+                />
+                <div>
+                    <p className='text-white'><b>{track.name}</b></p>
+                    <p className='text-sm text-[#b3b3b3]'>{track.album}</p>
                 </div>
-                <button><PiScreencast/></button>
-                <button><AiOutlineFullscreen/></button>
+            </div>
+
+            {/* Controls */}
+            <div className="text-white flex flex-col items-center gap-3">
+                <div className='flex items-center gap-4'>
+                    {shuffle ? (
+                        <button className='hover:text-[#16a349]' onClick={notShuffled}><RiOrderPlayFill /></button>
+                    ) : (
+                        <button className='hover:text-[#16a349]' onClick={shuffled}><FaShuffle /></button>
+                    )}
+                    <button className='hover:text-[#16a349]' ><FaBackwardStep /></button>
+                    {playStatus ? (
+                        <button className='hover:text-[#16a349]' onClick={pause}><FaPause /></button>
+                    ) : (
+                        <button className='hover:text-[#16a349]' onClick={play}><FaPlay /></button>
+                    )}
+                    <button className='hover:text-[#16a349]' ><FaForwardStep /></button>
+                    <button className='hover:text-[#16a349]' ><FaRepeat /></button>
+                    <button className='hover:text-[#16a349]' onClick={toggleMute}>{isMuted ? <FaVolumeXmark /> : <FaVolumeHigh />}</button>
+                </div>
+                {/* Seek Bar */}
+                <div 
+                    ref={seekBG} 
+                    className='w-96 h-1 bg-[#404040] rounded-full mt-2 cursor-pointer'
+                    onClick={handleSeek}
+                >
+                    <div 
+                        ref={seekBar} 
+                        className='h-1 bg-[#16a349] rounded-full'
+                        style={{ width: `${progressPercent}%` }}
+                    ></div>
+                </div>
+            </div>
+
+            {/* Right Controls */}
+            <div className='flex items-center justify-center gap-4'>
+                <div className='flex items-center gap-2 text-white'>
+                    <button className='hover:text-[#16a349]' ><BsFilePlay /></button>
+                    <button className='hover:text-[#16a349]' ><TbMicrophone2 /></button>
+                    <button className='hover:text-[#16a349]' ><MdOutlineQueueMusic /></button>
+                    <button className='hover:text-[#16a349]' ><LuMonitorSpeaker /></button>
+                    <button className='hover:text-[#16a349]' ><HiMiniSpeakerWave /></button>
+                    <div className='w-15 h-1 bg-[#404040] rounded-full mt-2 flex items-center cursor-pointer'>
+                        <div 
+                            className='h-1 bg-[#ffffff] rounded-full'
+                            style={{ width: `${volumePercent}%` }}
+                        ></div>
+                    </div>
+                    <button className='hover:text-[#16a349]' ><PiScreencast /></button>
+                    <button className='hover:text-[#16a349]' ><AiOutlineFullscreen /></button>
+                </div>
             </div>
         </div>
-    </div>
-
-  )
-}
+    );
+};

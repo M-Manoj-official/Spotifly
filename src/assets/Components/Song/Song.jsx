@@ -3,6 +3,8 @@ import { useState,useEffect } from 'react'
 import axios from 'axios'
 import { Routes, Route, Link } from 'react-router-dom';
 import { Albums } from '../Albums/Albums';
+import { useNavigate } from 'react-router-dom';
+import { DComponent } from '../DComponent/DComponent';
 
 export const Song = () => {
     const [albumss, setAlbums] = useState([]);
@@ -32,18 +34,22 @@ export const Song = () => {
         });
     }, []);
 
+
   return (
-    <div className='flex flex-col gap-8 bg-[#121212] absolute top-[72px] left-[428px] right-5 text-[#ffffff] m-2 p-8 rounded-xl overflow-y-scroll h-[690px] min-h-0 scrollbar-hide'>
-    <div className='flex flex-col gap-4'>
+    <div className='flex-1 text-white p-8 h-[690px] overflow-y-auto scrollbar-hide'>
+        <Routes><Route path='Spotifly/album/:id' element={<DComponent />}></Route></Routes>
+            <div className='flex flex-col gap-4'>
         <h1 className='font-bold'>Top playlists</h1>
         <div className='flex flex-row gap-8 overflow-x-auto scrollbar-hide'>
-            {albumss.map((albums) => ( 
-                <div key={albums.id} className='hover:bg-[#1f1f1f] p-2 rounded-md cursor-pointer flex-shrink-0'>
-                    <img className='w-[200px] h-[200px] rounded-md' src={albums.image} alt="playlist cover" />
-                    <p className='mt-2 text-base'><b>{albums.name}</b></p>
-                    <p className='text-sm text-[#b3b3b3]'>{albums.desc}</p>
-                </div>
-                ))}
+            {albumss.map((album, index) => (
+          <Albums 
+            key={album._id} 
+            image={album.image} 
+            name={album.name} 
+            desc={album.desc} 
+            id={album._id}
+          />
+        ))}
 
                 <div className='hover:bg-[#1f1f1f] p-2 rounded-md cursor-pointer flex-shrink-0'>
                     <img className='w-[200px] h-[200px] rounded-md' src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/album-cover-design-template-17fcf90e959a339da97142dfc0cd92a2_screen.jpg?ts=1668801995" alt="playlist cover" />
