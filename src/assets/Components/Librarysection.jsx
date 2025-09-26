@@ -1,7 +1,7 @@
 import React from 'react'
 import { AiOutlinePlus } from "react-icons/ai";
 
-export const Libraery = () => {
+export const Librarysection = () => {
   return (
     <div className='hidden sm:block w-[400px] h-[690px] bg-[#121212] m-2 p-8 rounded-xl text-white flex flex-col1'>
         <div className='flex flex-row justify-between items-center text-white text-m'>

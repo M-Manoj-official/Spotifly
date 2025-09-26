@@ -16,9 +16,9 @@ import { LuMonitorSpeaker } from "react-icons/lu";
 import { HiMiniSpeakerWave } from "react-icons/hi2";
 import { PiScreencast } from "react-icons/pi";
 import { AiOutlineFullscreen } from "react-icons/ai";
-import { PlayerContext } from '../PlayerContext/PlayerContext'; // Adjust path if needed
+import { PlayerContext } from './PlayerContext'; // Adjust path if needed
 
-export const MiniPlayer = () => {
+export const Player = () => {
     const {
         seekBar,
         seekBG,
@@ -28,6 +28,9 @@ export const MiniPlayer = () => {
         notShuffled,
         play,
         pause,
+        next,
+        previous,
+        loop,
         track,
         time,
         handleSeek
@@ -54,7 +57,7 @@ export const MiniPlayer = () => {
                     src={track.image} 
                     alt="Album Cover" 
                 />
-                <div>
+                <div className='flex flex-col hidden md:block'>
                     <p className='text-white'><b>{track.name}</b></p>
                     <p className='text-sm text-[#b3b3b3]'>{track.album}</p>
                 </div>
@@ -68,20 +71,21 @@ export const MiniPlayer = () => {
                     ) : (
                         <button className='hover:text-[#16a349]' onClick={shuffled}><FaShuffle /></button>
                     )}
-                    <button className='hover:text-[#16a349]' ><FaBackwardStep /></button>
+                    <button onClick={previous} className='hover:text-[#16a349]' ><FaBackwardStep /></button>
                     {playStatus ? (
                         <button className='hover:text-[#16a349]' onClick={pause}><FaPause /></button>
                     ) : (
                         <button className='hover:text-[#16a349]' onClick={play}><FaPlay /></button>
                     )}
-                    <button className='hover:text-[#16a349]' ><FaForwardStep /></button>
-                    <button className='hover:text-[#16a349]' ><FaRepeat /></button>
+                    <button onClick={next} className='hover:text-[#16a349]' ><FaForwardStep /></button>
+                    <button onClick={loop} className='hover:text-[#16a349]' ><FaRepeat /></button>
                     <button className='hover:text-[#16a349]' onClick={toggleMute}>{isMuted ? <FaVolumeXmark /> : <FaVolumeHigh />}</button>
                 </div>
-                {/* Seek Bar */}
+                <div className='flex flex-row justify-center items-center gap-4 text-white'>
+                    <div><p className='text-sm hidden md:block'>{time.currentTime.minutes}:{time.currentTime.seconds < 10 ? `0${time.currentTime.seconds}` : time.currentTime.seconds}</p></div>
                 <div 
                     ref={seekBG} 
-                    className='w-96 h-1 bg-[#404040] rounded-full mt-2 cursor-pointer'
+                    className='w-96 h-1 bg-[#404040] rounded-full mt-2 cursor-pointer screen sm:w-20 md:w-96'
                     onClick={handleSeek}
                 >
                     <div 
@@ -90,10 +94,12 @@ export const MiniPlayer = () => {
                         style={{ width: `${progressPercent}%` }}
                     ></div>
                 </div>
+                <div><p className='text-white text-sm hidden md:block'>{track.duration}</p></div>
+            </div>
             </div>
 
             {/* Right Controls */}
-            <div className='flex items-center justify-center gap-4'>
+            <div className='flex items-center justify-center gap-4 hidden md:block'>
                 <div className='flex items-center gap-2 text-white'>
                     <button className='hover:text-[#16a349]' ><BsFilePlay /></button>
                     <button className='hover:text-[#16a349]' ><TbMicrophone2 /></button>

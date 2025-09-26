@@ -2,11 +2,13 @@ import React from 'react'
 import { useState,useEffect } from 'react'
 import axios from 'axios'
 import { Routes, Route, Link } from 'react-router-dom';
-import { Albums } from '../Albums/Albums';
+import { Albums } from './Albums';
 import { useNavigate } from 'react-router-dom';
-import { DComponent } from '../DComponent/DComponent';
+import { Albumpage } from './Albumpage';
+import { useContext } from 'react';
+import { PlayerContext } from './PlayerContext';
 
-export const Song = () => {
+export const Display = () => {
     const [albumss, setAlbums] = useState([]);
     const [songs, setSongs] = useState([]);
 
@@ -34,14 +36,15 @@ export const Song = () => {
         });
     }, []);
 
+    const { playwithid } = useContext(PlayerContext);
+
 
   return (
     <div className='flex-1 text-white p-8 h-[690px] overflow-y-auto scrollbar-hide'>
-        <Routes><Route path='Spotifly/album/:id' element={<DComponent />}></Route></Routes>
-            <div className='flex flex-col gap-4'>
+        <div className='flex flex-col gap-4'>
         <h1 className='font-bold'>Top playlists</h1>
         <div className='flex flex-row gap-8 overflow-x-auto scrollbar-hide'>
-            {albumss.map((album, index) => (
+            {albumss.map((album) => (
           <Albums 
             key={album._id} 
             image={album.image} 
@@ -103,8 +106,8 @@ export const Song = () => {
         <div className='flex flex-col gap-4'>
             <h1 className='font-bold'>From Playlist 'Sibi's'</h1>
             <div className='flex flex-row gap-8 overflow-x-auto scrollbar-hide'>
-                {songs.map((song) => (
-                    <div key={song.id} className='hover:bg-[#1f1f1f] p-2 rounded-md cursor-pointer flex-shrink-0'>
+                {songs.map((song,index) => (
+                    <div key={song._id} onClick={() => playwithid(index)} className='hover:bg-[#1f1f1f] p-2 rounded-md cursor-pointer flex-shrink-0'>
                         <img className='w-[200px] h-[200px] rounded-md' src={song.image} alt="song cover" />
                         <p className='mt-2 text-base'><b>{song.name}</b></p>
                         <p className='text-sm text-[#b3b3b3]'>{song.desc}</p>

@@ -13,8 +13,6 @@ const navigate = useNavigate();
         <img src={image} alt="album" className='w-[200px] h-[200px] rounded-md'/>
         <p className='mt-2 text-base'><b>{name}</b></p>
         <p className='text-sm text-[#b3b3b3]'>{desc}</p>
-
-
         </div>
     )
 }

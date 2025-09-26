@@ -7,7 +7,8 @@ const PlayerProvider = (props) => {
     const audioRef = useRef(null); // Initialize as null
     const seekBG = useRef(null);
     const seekBar = useRef(null);
-    const [track, setTrack] = useState(null); // Start as null for loading
+    const [track, setTrack] = useState(null);
+    const [post, setPost] = useState([]);
     const [playStatus, setPlayStatus] = useState(false);
     const [shuffle, setShuffle] = useState(false);
     const [time, setTime] = useState({
@@ -20,7 +21,8 @@ const PlayerProvider = (props) => {
         const url = 'https://spotgpt-backend.onrender.com/api/song/list';
         axios.get(url).then((res) => {
             if (res.data?.songs?.[0]) {
-                setTrack(res.data.songs[2]);
+                setPost(res.data.songs);
+                setTrack(res.data.songs[0]);
                 console.log(res.data.songs[2]);
             } else {
                 console.error('No albums found in response');
@@ -88,6 +90,33 @@ const PlayerProvider = (props) => {
         }
     };
 
+    const next = () => {
+        if (post.length === 0) return;
+        const currentIndex = post.findIndex(t => t._id === track._id);
+        const nextIndex = (currentIndex + 1) % post.length;
+        setTrack(post[nextIndex]);
+        if (playStatus) {
+            audioRef.current.play();
+        }
+    };
+    const previous = () => {
+        if (post.length === 0) return;
+        const currentIndex = post.findIndex(t => t._id === track._id); 
+        const prevIndex = (currentIndex - 1 + post.length) % post.length;
+        setTrack(post[prevIndex]);
+        if (playStatus) {
+            audioRef.current.play();
+        }
+    };
+
+    const loop = () => {
+        if (audioRef.current) {
+            audioRef.current.currentTime = 0;
+            audioRef.current.play();
+            setPlayStatus(true);
+        }
+    };
+
     const shuffled = () => {
         setShuffle(true);
     };
@@ -96,6 +125,11 @@ const PlayerProvider = (props) => {
         setShuffle(false);
     }
 
+       const playwithid = async(id) => {
+        await setTrack(post[id]);
+        await audioRef.current.play();
+        setPlayStatus(true);
+    }
 
 
 
@@ -122,6 +156,10 @@ const PlayerProvider = (props) => {
         setTime,
         play,
         pause,
+        next,
+        previous,
+        loop,
+        playwithid,
         handleSeek // Expose for seek bar clicks
     };
 

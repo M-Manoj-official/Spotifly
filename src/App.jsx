@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import './App.css'
-import { Navbar } from './assets/Components/Navbar/Navbar'
-import { Libraery } from './assets/Components/Libraery/Libraery'
-import { Song } from './assets/Components/Song/Song'
-import { MiniPlayer } from './assets/Components/MiniPlayer/MiniPlayer'
+import { Navbar } from './assets/Components/Navbar.jsx'
+import { Librarysection } from './assets/Components/Librarysection.jsx'
+import { Player } from './assets/Components/Player.jsx'
 import { useContext } from 'react'
-import { PlayerContext } from './assets/Components/PlayerContext/PlayerContext.jsx'
-import { Albums } from './assets/Components/Albums/Albums.jsx'
+import { PlayerContext } from './assets/Components/PlayerContext.jsx'
+import { Homepage } from './assets/Components/Homepage.jsx'
+
 
 function App() {
 
@@ -17,10 +17,10 @@ function App() {
     <div className='bg-[#000000] h-screen w-screen overflow-hidden'>
       <Navbar />
       <div className='flex flex-row'>
-      <Libraery />
-      <Song />
+      <Librarysection />
+      <Homepage />
       </div>
-      <MiniPlayer/>
+      <Player />
       {track && <audio ref={audioRef} src={track.file} preload='auto'></audio>}
     </div>
     </>
